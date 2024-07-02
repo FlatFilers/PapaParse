@@ -1,12 +1,24 @@
 "use strict";
 
-var Papa = require("../papaparse.js");
+import * as Papa from "../papaparse.js";
+import * as fs from 'fs';
+import * as assert from 'assert';
 
-var fs = require('fs');
-var assert = require('assert');
-var longSampleRawCsv = fs.readFileSync(__dirname + '/long-sample.csv', 'utf8');
+const longSampleRawCsv: string = fs.readFileSync(__dirname + '/long-sample.csv', 'utf8');
 
-function assertLongSampleParsedCorrectly(parsedCsv) {
+interface ParsedCsv {
+	data: any[];
+	meta: {
+		delimiter: string;
+		linebreak: string;
+		aborted: boolean;
+		truncated: boolean;
+		cursor: number;
+	};
+	errors: any[];
+}
+
+function assertLongSampleParsedCorrectly(parsedCsv: ParsedCsv): void {
 	assert.equal(8, parsedCsv.data.length);
 	assert.deepEqual(parsedCsv.data[0], [
 		'Grant',
@@ -43,7 +55,7 @@ describe('PapaParse', function() {
 
 	it('Pause and resume works (Regression Test for Bug #636)', function(done) {
 		this.timeout(30000);
-		var mod200Rows = [
+		const mod200Rows: string[][] = [
 			["Etiam a dolor vitae est vestibulum","84","DEF"],
 			["Etiam a dolor vitae est vestibulum","84","DEF"],
 			["Lorem ipsum dolor sit","42","ABC"],
@@ -55,13 +67,12 @@ describe('PapaParse', function() {
 			["Lorem ipsum dolor sit","42","ABC"],
 			["Lorem ipsum dolor sit","42"]
 		];
-		var stepped = 0;
-		var dataRows = [];
+		let stepped: number = 0;
+		const dataRows: string[][] = [];
 		Papa.parse(fs.createReadStream(__dirname + '/verylong-sample.csv'), {
 			step: function(results, parser) {
 				stepped++;
-				if (results)
-				{
+				if (results) {
 					parser.pause();
 					parser.resume();
 					if (results.data && stepped % 200 === 0) {
@@ -133,9 +144,9 @@ describe('PapaParse', function() {
 	});
 
 	it('piped streaming CSV should be correctly parsed', function(done) {
-		var data = [];
-		var readStream = fs.createReadStream(__dirname + '/long-sample.csv', 'utf8');
-		var csvStream = readStream.pipe(Papa.parse(Papa.NODE_STREAM_INPUT));
+		const data: any[] = [];
+		const readStream = fs.createReadStream(__dirname + '/long-sample.csv', 'utf8');
+		const csvStream = readStream.pipe(Papa.parse(Papa.NODE_STREAM_INPUT));
 		csvStream.on('data', function(item) {
 			data.push(item);
 		});
@@ -163,7 +174,7 @@ describe('PapaParse', function() {
 	});
 
 	it('should support pausing and resuming on same tick when streaming', function(done) {
-		var rows = [];
+		let rows: any[] = [];
 		Papa.parse(fs.createReadStream(__dirname + '/long-sample.csv', 'utf8'), {
 			chunk: function(results, parser) {
 				rows = rows.concat(results.data);
@@ -198,7 +209,7 @@ describe('PapaParse', function() {
 	});
 
 	it('should support pausing and resuming asynchronously when streaming', function(done) {
-		var rows = [];
+		let rows: any[] = [];
 		Papa.parse(fs.createReadStream(__dirname + '/long-sample.csv', 'utf8'), {
 			chunk: function(results, parser) {
 				rows = rows.concat(results.data);
@@ -235,7 +246,7 @@ describe('PapaParse', function() {
 	});
 
 	it('handles errors in beforeFirstChunk', function(done) {
-		var expectedError = new Error('test');
+		const expectedError: Error = new Error('test');
 		Papa.parse(fs.createReadStream(__dirname + '/long-sample.csv', 'utf8'), {
 			beforeFirstChunk: function() {
 				throw expectedError;
@@ -248,7 +259,7 @@ describe('PapaParse', function() {
 	});
 
 	it('handles errors in chunk', function(done) {
-		var expectedError = new Error('test');
+		const expectedError: Error = new Error('test');
 		Papa.parse(fs.createReadStream(__dirname + '/long-sample.csv', 'utf8'), {
 			chunk: function() {
 				throw expectedError;
@@ -261,7 +272,7 @@ describe('PapaParse', function() {
 	});
 
 	it('handles errors in step', function(done) {
-		var expectedError = new Error('test');
+		const expectedError: Error = new Error('test');
 		Papa.parse(fs.createReadStream(__dirname + '/long-sample.csv', 'utf8'), {
 			step: function() {
 				throw expectedError;
