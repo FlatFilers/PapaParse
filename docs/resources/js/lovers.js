@@ -25,7 +25,14 @@
 	Thanks for being a part of Papa Parse!
 **/
 
-var peopleLovePapa = [
+interface Testimonial {
+	link?: string;
+	name: string;
+	description: string;
+	quote?: string;
+}
+
+const peopleLovePapa: Testimonial[] = [
 	{
 		link: "https://www.circlehd.com",
 		name: "CircleHD Enterprise Video Platform",
@@ -97,5 +104,4 @@ var peopleLovePapa = [
 		description: "is a brand-new messaging app made specifically for busy families. Automatically align all family members when sending text messages to parents in the kindergarten or school or when planning your kids birthday parties.",
 		quote: "With Papa it was a joy to implement our tool for importing messages and places from external systems."
 	}
-	
 ];
