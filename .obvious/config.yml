@@ -1,0 +1,7 @@
+# Obvious repo policy for FlatFilers/PapaParse
+# Auto-detected from GitHub repo settings on 2026-08-24.
+
+defaultBranch: master
+mergeMethod: squash        # merge commits disabled; squash + rebase allowed on GitHub
+deleteBranchOnMerge: false
+requireHumanMerge: true    # human approval required before setup PRs merge
